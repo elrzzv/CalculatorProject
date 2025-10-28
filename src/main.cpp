@@ -10,6 +10,7 @@ int main() {
     std::cout << "======== Calculator ========" << std::endl;
     std::cout << "Available operations: " << calculator.get_available_operators()<< std::endl;
     std::cout << "Available functions: " << calculator.get_available_functions()<< std::endl;
+    std::cout << "Available constants: " << calculator.get_available_constants()<< std::endl;
     std::cout << "Enter an expression or 'exit' to exit" << std::endl;
     std::cout << "============================" << std::endl;
 

@@ -14,6 +14,9 @@ ExpressionParser::ExpressionParser() {
         if (b == 0) throw std::runtime_error("Division by zero");
         return a / b;
     }, 2, false});
+
+    register_constant("PI", 3.14159265358979323846);
+    register_constant("E", 2.71828182845904523536);
 }
 
 void ExpressionParser::register_function(const std::string &name, const std::function<double(double)> &func) {
@@ -22,6 +25,10 @@ void ExpressionParser::register_function(const std::string &name, const std::fun
 
 void ExpressionParser::register_operator(const std::string &op, const OperatorInfo& op_info){
     operators[op] = {op_info.function, op_info.priority, op_info.is_right_associative};
+}
+
+void ExpressionParser::register_constant(const std::string &name, const double value) {
+    constants[name] = value;
 }
 
 std::vector<Token> ExpressionParser::tokenize(const std::string &expression) const {
@@ -45,13 +52,18 @@ std::vector<Token> ExpressionParser::tokenize(const std::string &expression) con
             }
             tokens.emplace_back(std::stod(number_str));
         } else if (std::isalpha(c)) {
-            //функция
+            //функция или константа
             std::string name;
             name += c;
             while (ss.peek() != EOF && std::isalpha(ss.peek())) {
                 name += static_cast<char>(ss.get());
             }
-            tokens.emplace_back(Token::FUNCTION, name);
+            if (is_constant(name)) {
+                tokens.emplace_back(Token::CONSTANT, name, get_constant_value(name));
+            }
+            else {
+                tokens.emplace_back(Token::FUNCTION, name);
+            }
         } else if (c == '(') {
             tokens.emplace_back(Token::LEFT_PAREN, "(");
         } else if (c == ')') {
@@ -74,6 +86,7 @@ std::vector<Token> ExpressionParser::infix_to_rpn(const std::vector<Token> &toke
     for (const auto &token: tokens) {
         switch (token.type) {
             case Token::NUMBER:
+            case Token::CONSTANT:
                 output.push_back(token);
                 break;
 
@@ -139,6 +152,7 @@ double ExpressionParser::evaluate_rpn(const std::vector<Token> &tokens) {
     for (const auto &token: tokens) {
         switch (token.type) {
             case Token::NUMBER:
+            case Token::CONSTANT:
                 stack.push(token.number_value);
                 break;
 
@@ -191,6 +205,10 @@ int ExpressionParser::get_operator_priority(const std::string &op)const{
     return 0;
 }
 
+double ExpressionParser::get_constant_value(const std::string &name)const {
+    return constants.at(name);
+}
+
 bool ExpressionParser::is_right_associative(const std::string &op) const{
     if (operators.contains(op)) {
         return operators.at(op).is_right_associative;
@@ -205,7 +223,13 @@ double ExpressionParser::parse(const std::string &expression) {
 }
 
 bool ExpressionParser::is_operator(const char c) const {
-    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+    if (operators.contains(std::string(1, c))) return true;
+    return false;
+}
+
+bool ExpressionParser::is_constant(const std::string &name) const {
+    if (constants.contains(name)) return true;
+    return false;
 }
 
 bool ExpressionParser::is_function(const std::string &str) const {
@@ -238,6 +262,14 @@ std::vector<std::string> ExpressionParser::get_all_operators() const {
     std::vector<std::string> names;
     for (const auto &op: operators) {
         names.push_back(op.first);
+    }
+    return names;
+}
+
+std::vector<std::string> ExpressionParser::get_all_constants() const {
+    std::vector<std::string> names;
+    for (const auto &constant: constants) {
+        names.push_back(constant.first);
     }
     return names;
 }

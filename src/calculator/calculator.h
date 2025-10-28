@@ -19,6 +19,8 @@ public:
 
     std::string get_available_operators() const;
 
+    std::string get_available_constants() const;
+
     void register_function(const std::string& name, const std::function<double(double)> &func);
 
 private:

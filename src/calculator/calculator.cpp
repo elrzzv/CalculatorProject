@@ -48,6 +48,17 @@ std::string Calculator::get_available_operators() const {
     return total;
 }
 
+std::string Calculator::get_available_constants() const {
+    const auto cnst = parser.get_all_constants();
+    std::string total;
+    if (cnst.empty()) return total;
+    for (auto it= cnst.begin(); it != --cnst.end(); ++it) {
+        total += (*it) + ", ";
+    }
+    total += cnst.back();
+    return total;
+}
+
 void Calculator::register_function(const std::string& name, const std::function<double(double)> &func) {
     parser.register_function(name, func);
 }
