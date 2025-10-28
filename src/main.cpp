@@ -1,12 +1,17 @@
 #include <iostream>
 #include <string>
-#include "utils/expression_parser.h"
+#include "calculator/calculator.h"
 
 int main() {
-    ExpressionParser parser;
 
-    std::cout << "The calculator is ready! Enter an expression or 'exit' to exit." << std::endl;
-    std::cout << "Available functions: " << parser.get_all_functions_names() << std::endl;
+    Calculator calculator;
+    calculator.load_plugins(".");
+
+    std::cout << "======== Calculator ========" << std::endl;
+    std::cout << "Available operations: " << calculator.get_available_operators()<< std::endl;
+    std::cout << "Available functions: " << calculator.get_available_functions()<< std::endl;
+    std::cout << "Enter an expression or 'exit' to exit" << std::endl;
+    std::cout << "============================" << std::endl;
 
     std::string input;
     while (true) {
@@ -17,8 +22,8 @@ int main() {
         if (input.empty()) continue;
 
         try {
-            const double result = parser.parse(input);
-            std::cout << "Result: " << result << std::endl;
+            const double result = calculator.calculate(input);
+            std::cout << "> " << result << std::endl;
         } catch (const std::exception& e) {
             std::cout << "Error: " << e.what() << std::endl;
         }

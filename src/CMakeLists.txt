@@ -3,7 +3,6 @@ add_executable(calc
         calculator/calculator.cpp
         calculator/plugin_loader.cpp
         utils/expression_parser.cpp
-        ../plugins/simple_plugin.cpp
 )
 
 
