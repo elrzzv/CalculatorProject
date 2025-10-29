@@ -14,6 +14,18 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcdeg.cpp")
     add_library(funcdeg SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcdeg.cpp")
 endif()
 
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcsqrt.cpp")
+    add_library(funcsqrt SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcsqrt.cpp")
+endif()
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcabs.cpp")
+    add_library(funcabs SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcabs.cpp")
+endif()
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcexp.cpp")
+    add_library(funcexp SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcexp.cpp")
+endif()
+
 
 # Для Windows
 if(WIN32)
@@ -21,4 +33,8 @@ if(WIN32)
     target_compile_definitions(funccos PRIVATE BUILDING_DLL=1)
     target_compile_definitions(funcln PRIVATE BUILDING_DLL=1)
     target_compile_definitions(funcdeg PRIVATE BUILDING_DLL=1)
+    target_compile_definitions(funcsqrt PRIVATE BUILDING_DLL=1)
+    target_compile_definitions(funcabs PRIVATE BUILDING_DLL=1)
+    target_compile_definitions(funcexp PRIVATE BUILDING_DLL=1)
+
 endif()
