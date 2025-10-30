@@ -107,11 +107,9 @@ std::map<std::string, OperatorInfo> PluginLoader::get_operators() const {
 }
 
 void PluginLoader::unload_all_plugins() {
-    std::cout << "Unloading all plugins..." << std::endl;
     for (auto& [name, handle] : loaded_libraries) {
         if (handle) {
             FreeLibrary(handle);
-            std::cout << "Unloaded: " << name << std::endl;
         }
     }
     loaded_libraries.clear();
