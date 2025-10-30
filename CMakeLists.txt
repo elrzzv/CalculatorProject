@@ -13,8 +13,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
 add_subdirectory(src)
 add_subdirectory(plugins)
 
-add_dependencies(calc funcsin funccos funcln funcdeg funcsqrt funcabs funcexp)
+if(PLUGIN_TARGETS)
+    add_dependencies(calc ${PLUGIN_TARGETS})
+    message(STATUS "Plugin dependencies: ${PLUGIN_TARGETS}")
+endif()
 
+#google test
 option(BUILD_TESTS "Build tests" ON)
 if(BUILD_TESTS)
     add_subdirectory(tests)

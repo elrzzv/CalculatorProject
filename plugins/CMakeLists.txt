@@ -1,40 +1,21 @@
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcsin.cpp")
-    add_library(funcsin SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcsin.cpp")
-endif()
+#все файлы плагинов
+file(GLOB PLUGIN_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/func*.cpp")
 
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funccos.cpp")
-    add_library(funccos SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funccos.cpp")
-endif()
+set(PLUGIN_TARGETS "")
 
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcln.cpp")
-    add_library(funcln SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcln.cpp")
-endif()
+foreach(PLUGIN_SOURCE ${PLUGIN_SOURCES})
+    get_filename_component(PLUGIN_TARGET ${PLUGIN_SOURCE} NAME_WE)
+    add_library(${PLUGIN_TARGET} SHARED ${PLUGIN_SOURCE})
+    list(APPEND PLUGIN_TARGETS ${PLUGIN_TARGET})
+    message(STATUS "Added plugin: ${PLUGIN_TARGET}")
+endforeach()
 
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcdeg.cpp")
-    add_library(funcdeg SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcdeg.cpp")
-endif()
-
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcsqrt.cpp")
-    add_library(funcsqrt SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcsqrt.cpp")
-endif()
-
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcabs.cpp")
-    add_library(funcabs SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcabs.cpp")
-endif()
-
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/funcexp.cpp")
-    add_library(funcexp SHARED "${CMAKE_CURRENT_SOURCE_DIR}/funcexp.cpp")
-endif()
-
-
-# Для Windows
+#для windows
 if(WIN32)
-    target_compile_definitions(funcsin PRIVATE BUILDING_DLL=1)
-    target_compile_definitions(funccos PRIVATE BUILDING_DLL=1)
-    target_compile_definitions(funcln PRIVATE BUILDING_DLL=1)
-    target_compile_definitions(funcdeg PRIVATE BUILDING_DLL=1)
-    target_compile_definitions(funcsqrt PRIVATE BUILDING_DLL=1)
-    target_compile_definitions(funcabs PRIVATE BUILDING_DLL=1)
-    target_compile_definitions(funcexp PRIVATE BUILDING_DLL=1)
-
+    foreach(PLUGIN_TARGET ${PLUGIN_TARGETS})
+        target_compile_definitions(${PLUGIN_TARGET} PRIVATE BUILDING_DLL=1)
+    endforeach()
 endif()
+
+#cохраняем список для использования в главном CMakeLists.txt
+set(PLUGIN_TARGETS ${PLUGIN_TARGETS} PARENT_SCOPE)
