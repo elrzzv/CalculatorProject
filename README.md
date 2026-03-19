@@ -49,3 +49,64 @@ cmake --build . --config Debug
 
 Пример сессии:
 ```
+======== Calculator ========
+Available operations: +, -, /, *, ^
+Available functions: sin, cos, ln, abs, sqrt, exp, deg
+Available constants: PI, E
+Enter an expression or 'exit' to exit
+============================
+> 2 + 3 * 4
+> 14
+> sin(PI/2)
+> 1
+> 2 ^ 3 ^ 2
+> 512
+> exit
+```
+
+## Тесты
+
+```bash
+cd build
+ctest --output-on-failure
+```
+
+## Добавление плагинов
+
+### Функция (unary):
+
+```cpp
+extern "C" {
+    __declspec(dllexport) double execute(double x) {
+        return std::sin(x);
+    }
+    
+    __declspec(dllexport) const char* get_function_name() {
+        return "sin";
+    }
+}
+```
+
+### Оператор (binary):
+
+```cpp
+extern "C" {
+    __declspec(dllexport) double execute_operator(double a, double b) {
+        return std::pow(a, b);
+    }
+    
+    __declspec(dllexport) const char* get_operator_name() {
+        return "^";
+    }
+    
+    __declspec(dllexport) int get_priority() {
+        return 3;
+    }
+    
+    __declspec(dllexport) bool is_right_associative() {
+        return true;
+    }
+}
+```
+
+Добавьте новый `.cpp` файл в директорию `plugins/` - CMake автоматически включит его в сборку.
